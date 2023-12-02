@@ -9,12 +9,24 @@ const firestoreService = getFirestore();
 
 exports.createPost = onCall(async (request) => {
 
-    const post = { ...request.data, createdAt: Timestamp.now() };
+  const post = { ...request.data, createdAt: Timestamp.now() };
 
-    try {
-        await firestoreService.collection('posts').add(post);
-    } catch (err) {
-        throw new HttpsError('internal', 'Could not create post');
-    }
-    return post;
+  try {
+    await firestoreService.collection('posts').add(post);
+  } catch (err) {
+    throw new HttpsError('internal', 'Could not create post');
+  }
+  return post;
 });
+
+exports.createUser = onCall(async (request) => {
+  const user = {
+    firstName: request.data.firstName,
+    lastName: request.data.lastName,
+    email: request.data.email
+  };
+
+  await firestoreService.collection('users').add(user);
+
+  return user;
+})

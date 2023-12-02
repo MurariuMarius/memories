@@ -13,8 +13,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-console.log("fsadfasdfsadf")
-
 const firestoreService = getFirestore(app);
 const authService = getAuth();
 

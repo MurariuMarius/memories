@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { getFunctions, httpsCallable } from 'firebase/functions'
-import { app } from '../firebase/config'
+import { app, authService } from '../firebase/config'
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 const API = axios.create({ baseURL: 'https://us-central1-memories-8f4d0.cloudfunctions.net' });
 
@@ -15,6 +16,7 @@ API.interceptors.request.use((req) => {
 const functions = getFunctions()
 
 export const fetchPosts = () => API.get('/posts');
+
 export const createPost = async (newPost) => {
   console.log(JSON.parse(JSON.stringify(newPost)));
   const createPost = httpsCallable(functions, 'createPost');
@@ -25,4 +27,16 @@ export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updated
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 
 export const signIn = (formData) => API.post('/user/signin', formData);
-export const signUp = (formData) => API.post('/user/signup', formData);
+
+export const signUp = async (formData) => {
+  const res = await createUserWithEmailAndPassword(authService, formData.email, formData.password);
+
+  console.log(authService.currentUser);
+  updateProfile(res.user, { displayName: formData.firstName });
+
+  const createUser = httpsCallable(functions, 'createUser');
+  const user = await createUser({ firstName: formData.firstName, lastName: formData.lastName, email: formData.email });
+
+
+  return user;
+}
