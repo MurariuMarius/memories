@@ -19,6 +19,45 @@ exports.createPost = onCall(async (request) => {
   return post;
 });
 
+exports.likePost = onCall(async (request) => {
+
+    const like = {...request.data};
+
+    try{
+      await firestoreService.collection('likes').add(like);
+    }catch(err){
+      throw new HttpsError('internal', 'Could not add likes');
+    }
+
+    return like;
+});
+
+exports.updatePost = onCall(async (request) =>{
+
+    const update = {...request.data};
+
+    try{
+      await firestoreService.collection('updates').add(update);
+    }catch(err){
+      throw new HttpsError('internal','Could not add updates');
+    }
+
+    return update;
+});
+
+exports.deletePost = onCall(async (request) => {
+
+  const del = {...request.data};
+
+  try{
+    await firestoreService.collection('deletes').add(del);
+  }catch(err){
+    throw new HttpsError('internal', 'Could not add delete');
+  }
+
+  return del;
+});
+
 exports.createUser = onCall(async (request) => {
   const user = {
     firstName: request.data.firstName,
