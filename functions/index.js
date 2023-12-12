@@ -62,10 +62,10 @@ exports.createUser = onCall(async (request) => {
   const user = {
     firstName: request.data.firstName,
     lastName: request.data.lastName,
-    email: request.data.email
+    email: request.data.email,
   };
 
   await firestoreService.collection('users').add(user);
 
-  return user;
+  return { ...user, name: user.firstName + " " + user.lastName };
 })
