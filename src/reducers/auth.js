@@ -1,4 +1,6 @@
+import { signOut } from 'firebase/auth';
 import * as actionType from '../constants/actionTypes';
+import { authService } from '../firebase/config';
 
 const authReducer = (state = { authData: null }, action) => {
   switch (action.type) {
@@ -8,7 +10,7 @@ const authReducer = (state = { authData: null }, action) => {
       return { ...state, authData: action.data, loading: false, errors: null };
     case actionType.LOGOUT:
       localStorage.clear();
-
+      signOut(authService);
       return { ...state, authData: null, loading: false, errors: null };
     default:
       return state;
