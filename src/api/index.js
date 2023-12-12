@@ -31,7 +31,7 @@ export const signIn = async (formData) => {
   const userCredentials = await signInWithEmailAndPassword(authService, formData.email, formData.password);
   const user = userCredentials.user;
   console.log({ ...user, name: user.displayName });
-  return { ...user, name: user.displayName }
+  return {data: { ...user, name: user.displayName }}
 }
 
 export const signUp = async (formData) => {
