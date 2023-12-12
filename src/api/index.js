@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { app, authService } from '../firebase/config'
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 const API = axios.create({ baseURL: 'https://us-central1-memories-8f4d0.cloudfunctions.net' });
 
@@ -26,7 +26,13 @@ export const likePost = (id) => API.patch(`/posts/${id}/likePost`);
 export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 
-export const signIn = (formData) => API.post('/user/signin', formData);
+export const signIn = async (formData) => {
+  console.log(formData.email, formData.password);
+  const userCredentials = await signInWithEmailAndPassword(authService, formData.email, formData.password);
+  const user = userCredentials.user;
+  console.log({ ...user, name: user.displayName });
+  return { ...user, name: user.displayName }
+}
 
 export const signUp = async (formData) => {
   const res = await createUserWithEmailAndPassword(authService, formData.email, formData.password);
