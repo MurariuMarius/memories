@@ -2,16 +2,34 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { initializeApp } = require('firebase-admin/app');
 const { getFirestore, Timestamp } = require('firebase-admin/firestore');
 const logger = require("firebase-functions/logger");
+const { getStorage, getDownloadURL } = require("firebase-admin/storage");
 
 const app = initializeApp();
 
 const firestoreService = getFirestore();
+const storageBucket = getStorage().bucket();
 
 exports.createPost = onCall(async (request) => {
+
+  const getFileFromBase64 = (base64) => {
+    return Uint8Array.from(Buffer.from(base64, 'base64'));
+  }
+
+  const addImageURL = async (post) => {
+    if (!post.selectedFile) {
+      throw new HttpsError('invalid-argument', "No image added");
+    }
+    const file = getFileFromBase64(post.selectedFile);
+    const fileRef = storageBucket.file(`posts/${request.auth.uid}/${12000 * Math.random()}`);
+    await fileRef.save(file);
+
+    post.selectedFile = await getDownloadURL(fileRef);
+  }
 
   const post = { ...request.data, createdAt: Timestamp.now() };
 
   try {
+    await addImageURL(post);
     await firestoreService.collection('posts').add(post);
   } catch (err) {
     throw new HttpsError('internal', 'Could not create post');
