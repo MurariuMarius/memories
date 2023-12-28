@@ -20,13 +20,13 @@ exports.createPost = onCall(async (request) => {
       throw new HttpsError('invalid-argument', "No image added");
     }
     const file = getFileFromBase64(post.selectedFile);
-    const fileRef = storageBucket.file(`posts/${request.auth.uid}/${12000 * Math.random()}`);
+    const fileRef = storageBucket.file(`posts/${request.auth.uid}/${Math.random()}`);
     await fileRef.save(file);
 
     post.selectedFile = await getDownloadURL(fileRef);
   }
 
-  const post = { ...request.data, createdAt: Timestamp.now() };
+  const post = { ...request.data, creator:request.auth.uid, likes: 0, createdAt: Timestamp.now() };
 
   try {
     await addImageURL(post);

@@ -15,7 +15,7 @@ API.interceptors.request.use((req) => {
 
 const functions = getFunctions()
 
-export const fetchPosts = () => API.get('/posts');
+// export const fetchPosts = () => API.get('/posts');
 
 export const createPost = async (newPost) => {
   console.log(JSON.parse(JSON.stringify(newPost)));
