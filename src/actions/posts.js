@@ -1,11 +1,19 @@
 import { FETCH_ALL, CREATE, UPDATE, DELETE, LIKE } from '../constants/actionTypes';
 import * as api from '../api/index.js';
+import { firestoreService } from '../firebase/config.js';
+import { collection, getDocs } from 'firebase/firestore';
 
 export const getPosts = () => async (dispatch) => {
   try {
-    const { data } = await api.fetchPosts();
+    const posts = [];
+    const data = await getDocs(collection(firestoreService, "posts"));
+    data.forEach((doc) => {
+      posts.push({id: doc.id, ...doc.data()});
+    })
 
-    dispatch({ type: FETCH_ALL, payload: data });
+    console.log(posts);
+  
+    dispatch({ type: FETCH_ALL, payload: posts });
   } catch (error) {
     console.log(error);
   }

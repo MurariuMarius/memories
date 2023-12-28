@@ -2,7 +2,6 @@
   "name": "mern-stack-client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000",
   "dependencies": {
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
@@ -11,6 +10,10 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
+    "firebase": "^10.7.0",
+    "firebase-admin": "^11.11.1",
+    "firebase-functions": "^4.5.0",
+    "firebase-tools": "^12.9.1",
     "jwt-decode": "^3.1.2",
     "material-ui-chip-input": "^1.1.0",
     "moment": "^2.29.4",
