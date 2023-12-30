@@ -26,7 +26,7 @@ exports.createPost = onCall(async (request) => {
     post.selectedFile = await getDownloadURL(fileRef);
   }
 
-  const post = { ...request.data, creator:request.auth.uid, likes: 0, createdAt: Timestamp.now() };
+  const post = { ...request.data, creator:request.auth.uid, likes: [], createdAt: Timestamp.now() };
 
   try {
     await addImageURL(post);

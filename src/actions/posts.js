@@ -3,13 +3,25 @@ import * as api from '../api/index.js';
 import { firestoreService } from '../firebase/config.js';
 import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 
+const getComments = async (postId) => {
+  const comments = [];
+  const snapshot = await getDocs(collection(firestoreService, `posts/${postId}/comments`));
+  snapshot.forEach(c => comments.push({id: c.id, ...c.data()}));
+  return comments;
+}
+
 export const getPosts = () => async (dispatch) => {
   try {
     const posts = [];
     const data = await getDocs(collection(firestoreService, "posts"));
-    data.forEach((doc) => {
-      posts.push({id: doc.id, ...doc.data()});
-    })
+
+    data.forEach(doc => 
+      posts.push({ id: doc.id, ...doc.data()})
+    );
+
+    for await (const post of posts) {
+      post.comments = await getComments(post.id);  
+    }
 
     console.log(posts);
   

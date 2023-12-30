@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardActions, CardContent, CardMedia, Button, Typography } from '@material-ui/core/';
+import { Card, CardActions, CardContent, CardMedia, Button, Typography, List, ListItem } from '@material-ui/core/';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -9,6 +9,8 @@ import moment from 'moment';
 
 import { likePost, deletePost } from '../../../actions/posts';
 import useStyles from './styles';
+
+import Comment from './Comment.js'
 
 const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
@@ -49,6 +51,16 @@ const Post = ({ post, setCurrentId }) => {
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">{post.message}</Typography>
       </CardContent>
+      <List> 
+        {post.comments.map(comment => {
+          console.log(comment);
+          return (
+          <ListItem>
+            <Comment comment={comment} />
+          </ListItem>
+          );
+        })}
+      </List>
       <CardActions className={classes.cardActions}>
         <Button size="small" color="primary" disabled={!user?.result} onClick={() => dispatch(likePost(post.id))}>
           <Likes />
