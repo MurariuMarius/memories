@@ -22,7 +22,11 @@ export const createPost = async (newPost) => {
   const createPost = httpsCallable(functions, 'createPost');
   await createPost(newPost);
 };
-export const likePost = (id) => API.patch(`/posts/${id}/likePost`);
+export const likePost = async (postID) => {
+  const likePost = httpsCallable(functions, 'likePost');
+  const res = await likePost({ postID });
+  return res;
+}
 export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 
