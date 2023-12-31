@@ -102,3 +102,19 @@ exports.createUser = onCall(async (request) => {
 
   return { ...user, name: user.firstName + " " + user.lastName };
 })
+
+exports.createComment = onCall(async request => {
+  const postID = request.data.postID;
+  const comment = {
+    text: request.data.text,
+    userID: request.auth.uid,
+    createdAt: Timestamp.now()
+  }
+
+  try{
+    await firestoreService.collection(`posts/${postID}/comments`).add(comment);
+
+  }catch(err){
+    throw new HttpsError('internal', 'Could not create comment');
+  }
+});
