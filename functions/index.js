@@ -3,6 +3,7 @@ const { initializeApp } = require('firebase-admin/app');
 const { getFirestore, Timestamp } = require('firebase-admin/firestore');
 const { getStorage, getDownloadURL } = require("firebase-admin/storage");
 const { logger } = require("firebase-functions/v2");
+const { log } = require("firebase-functions/logger");
 
 const app = initializeApp();
 
@@ -98,23 +99,27 @@ exports.createUser = onCall(async (request) => {
     email: request.data.email,
   };
 
-  await firestoreService.collection('users').add(user);
+  await firestoreService.collection('users').doc(request.auth.uid).create(user);
 
   return { ...user, name: user.firstName + " " + user.lastName };
 })
 
 exports.createComment = onCall(async request => {
   const postID = request.data.postID;
-  const comment = {
+  let comment = {
     text: request.data.text,
     userID: request.auth.uid,
     createdAt: Timestamp.now()
   }
 
-  try{
+  try {
+    const userSnapshot = await firestoreService.collection('users').doc(comment.userID).get();
+    const user =  { ...userSnapshot.data() };
+    comment = { ...comment, firstName: user.firstName, lastName: user.lastName };
     await firestoreService.collection(`posts/${postID}/comments`).add(comment);
-
-  }catch(err){
+  } catch(err) {
+    logger.log(err)
+    logger.log(err.message)
     throw new HttpsError('internal', 'Could not create comment');
   }
 });
