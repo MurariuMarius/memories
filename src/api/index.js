@@ -17,6 +17,8 @@ const functions = getFunctions()
 
 // export const fetchPosts = () => API.get('/posts');
 
+export const fetchPostsByCreator = (name) => API.get(`/posts/creator?name=${name}`);
+
 export const createPost = async (newPost) => {
   console.log(JSON.parse(JSON.stringify(newPost)));
   const createPost = httpsCallable(functions, 'createPost');

@@ -1,4 +1,4 @@
-import { FETCH_ALL, CREATE, UPDATE, DELETE, LIKE } from '../constants/actionTypes';
+import { FETCH_ALL, CREATE, UPDATE, DELETE, LIKE ,FETCH_BY_CREATOR} from '../constants/actionTypes';
 import * as api from '../api/index.js';
 import { firestoreService } from '../firebase/config.js';
 import { collection, getDocs } from 'firebase/firestore';
@@ -56,6 +56,18 @@ export const deletePost = (id) => async (dispatch) => {
     await await api.deletePost(id);
 
     dispatch({ type: DELETE, payload: id });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getPostsByCreator = (name) => async (dispatch) => {
+  try {
+    dispatch({ type: START_LOADING });
+    const { data: { data } } = await api.fetchPostsByCreator(name);
+
+    dispatch({ type: FETCH_BY_CREATOR, payload: { data } });
+    dispatch({ type: END_LOADING });
   } catch (error) {
     console.log(error);
   }
