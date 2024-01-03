@@ -17,7 +17,8 @@ API.interceptors.request.use((req) => {
 const functions = getFunctions()
 
 // export const fetchPosts = () => API.get('/posts');
-
+export const fetchPost = (id) => API.get(`/posts/${id}`);
+export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
 export const createPost = async (newPost) => {
   const createPost = httpsCallable(functions, 'createPost');
 
