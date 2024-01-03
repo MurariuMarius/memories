@@ -5,6 +5,8 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const functions = getFunctions(app);
 
+export const fetchPostsByCreator = (name) => API.get(`/posts/creator?name=${name}`);
+
 export const createPost = async (newPost) => {
   const createPost = httpsCallable(functions, 'createPost');
 

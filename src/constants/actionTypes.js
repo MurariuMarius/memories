@@ -17,3 +17,5 @@ export const FETCH_BY_CREATOR = 'FETCH_BY_CREATOR';
 export const FETCH_BY_SEARCH = 'FETCH_BY_SEARCH';
 export const AUTH = 'AUTH';
 export const LOGOUT = 'LOGOUT';
+
+export const FETCH_BY_CREATOR = 'FETCH_BY_CREATOR';
