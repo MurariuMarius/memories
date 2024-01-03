@@ -11,3 +11,5 @@ export const START_LOADING = 'START_LOADING';
 export const UPDATE_POST_FORM = 'UPDATE_POST_FORM'
 export const AUTH = 'AUTH';
 export const LOGOUT = 'LOGOUT';
+
+export const FETCH_BY_CREATOR = 'FETCH_BY_CREATOR';
