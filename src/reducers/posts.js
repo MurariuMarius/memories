@@ -6,6 +6,16 @@ export default (posts = [], action) => {
       return action.payload;
     case LIKE:
       return posts.map((post) => (post.id === action.payload.id ? action.payload : post));
+    case COMMENT:
+        return {
+          ...state,
+          posts: state.posts.map((post) => {
+            if (post._id == +action.payload._id) {
+              return action.payload;
+            }
+            return post;
+          }),
+        };
     case CREATE:
       return [...posts, action.payload];
     case UPDATE:

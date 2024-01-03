@@ -63,3 +63,5 @@ export const signUp = async (formData) => {
 
   return user;
 }
+
+export const comment = (value,id) => API.post(`/posts/${id}/commentPost`, { value });
