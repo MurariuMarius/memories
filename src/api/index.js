@@ -37,6 +37,7 @@ export const createPost = async (newPost) => {
 export const likePost = async (postID) => {
   const likePost = httpsCallable(functions, 'likePost');
   const res = await likePost({ postID });
+  res.data.createdAt.seconds = res.data.createdAt._seconds;
   return res;
 }
 export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
