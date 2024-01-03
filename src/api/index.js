@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { getFunctions, httpsCallable } from 'firebase/functions'
-import { app, authService } from '../firebase/config'
+import { app, authService, storageBucket } from '../firebase/config'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const API = axios.create({ baseURL: 'https://us-central1-memories-8f4d0.cloudfunctions.net' });
 
@@ -18,8 +19,19 @@ const functions = getFunctions()
 // export const fetchPosts = () => API.get('/posts');
 
 export const createPost = async (newPost) => {
-  console.log(JSON.parse(JSON.stringify(newPost)));
   const createPost = httpsCallable(functions, 'createPost');
+
+  const addImageURL = async (post) => {
+    if (!post.selectedFile) {
+      throw new Error('No file selected')
+    }
+    const storageRef = ref(storageBucket, `posts/${authService.currentUser.uid}/${Math.random()}`);
+    await uploadBytes(storageRef, post.selectedFile);
+    post.selectedFile = await getDownloadURL(storageRef);
+    console.log(post.selectedFile);
+  }
+
+  await addImageURL(newPost);
   await createPost(newPost);
 };
 export const likePost = async (postID) => {
