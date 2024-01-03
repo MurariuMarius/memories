@@ -1,4 +1,4 @@
-import { FETCH_ALL, CREATE, UPDATE, DELETE, LIKE } from '../constants/actionTypes';
+import { FETCH_ALL, CREATE, UPDATE, DELETE, LIKE, COMMENT } from '../constants/actionTypes';
 import * as api from '../api/index.js';
 import { firestoreService } from '../firebase/config.js';
 import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
