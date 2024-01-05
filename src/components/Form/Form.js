@@ -20,7 +20,7 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 const Form = ({ currentId, setCurrentId }) => {
-  const [postData, setPostData] = useState({ title: '', message: '', tags: '', selectedFile: '' });
+  const [postData, setPostData] = useState({ title: '', message: '', tags: '', image: '' });
   const post = useSelector((state) => (currentId ? state.posts.find((message) => message._id === currentId) : null));
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -32,7 +32,7 @@ const Form = ({ currentId, setCurrentId }) => {
 
   const clear = () => {
     setCurrentId(0);
-    setPostData({ title: '', message: '', tags: '', selectedFile: '' });
+    setPostData({ title: '', message: '', tags: '', image: '' });
   };
 
   const handleSubmit = async (e) => {
@@ -66,7 +66,7 @@ const Form = ({ currentId, setCurrentId }) => {
         <TextField name="tags" variant="outlined" label="Tags (coma separated)" fullWidth value={postData.tags} onChange={(e) => setPostData({ ...postData, tags: e.target.value.split(',') })} />
         <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
           Upload file
-          <VisuallyHiddenInput type="file" onChange={e => setPostData({ ...postData, selectedFile: e.target.files[0] })}/>
+          <VisuallyHiddenInput type="file" onChange={e => setPostData({ ...postData, image: e.target.files[0] })}/>
         </Button>        
         <Button className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" fullWidth>Submit</Button>
         <Button variant="contained" color="secondary" size="small" onClick={clear} fullWidth>Clear</Button>

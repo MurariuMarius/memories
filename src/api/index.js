@@ -23,13 +23,13 @@ export const createPost = async (newPost) => {
   const createPost = httpsCallable(functions, 'createPost');
 
   const addImageURL = async (post) => {
-    if (!post.selectedFile) {
+    if (!post.image) {
       throw new Error('No file selected')
     }
     const storageRef = ref(storageBucket, `posts/${authService.currentUser.uid}/${Math.random()}`);
-    await uploadBytes(storageRef, post.selectedFile);
-    post.selectedFile = await getDownloadURL(storageRef);
-    console.log(post.selectedFile);
+    await uploadBytes(storageRef, post.image);
+    post.image = await getDownloadURL(storageRef);
+    console.log(post.image);
   }
 
   await addImageURL(newPost);
