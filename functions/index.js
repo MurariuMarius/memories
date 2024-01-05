@@ -89,6 +89,14 @@ exports.createUser = onCall(async (request) => {
 })
 
 exports.createComment = onCall(async request => {
+
+  const getComments = async (postId) => {
+    const comments = [];
+    const snapshot = await firestoreService.collection(`posts/${postId}/comments`).get();
+    snapshot.forEach(c => comments.push({id: c.id, ...c.data()}));
+    return comments;
+  }
+
   const postID = request.data.postID;
   let comment = {
     text: request.data.text,
@@ -100,7 +108,12 @@ exports.createComment = onCall(async request => {
     const userSnapshot = await firestoreService.collection('users').doc(comment.userID).get();
     const user =  { ...userSnapshot.data() };
     comment = { ...comment, firstName: user.firstName, lastName: user.lastName };
-    await firestoreService.collection(`posts/${postID}/comments`).add(comment);
+    const snapshot = await firestoreService.collection(`posts/${postID}/comments`).add(comment);
+
+    const post = await snapshot.get();
+
+    const comments = await getComments(postID);
+    return { id: post.id, ...post.data(), comments };
   } catch(err) {
     logger.log(err)
     logger.log(err.message)

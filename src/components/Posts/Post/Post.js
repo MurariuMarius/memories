@@ -6,10 +6,10 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ThumbUpAltOutlined from '@material-ui/icons/ThumbUpAltOutlined';
 import InfoIcon from '@material-ui/icons/Info';
 import { useDispatch } from 'react-redux';
-import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 
 import { getPost, likePost, deletePost } from '../../../actions/posts';
+import getDate from '../../../utils/getDate'
 import useStyles from './styles';
 
 const Post = ({ post, setCurrentId }) => {
@@ -52,7 +52,7 @@ const Post = ({ post, setCurrentId }) => {
         />
         <div className={classes.overlay}>
           <Typography variant="h6">{post.name}</Typography>
-          <Typography variant="body2">{moment(new Date(post.createdAt.seconds * 1000)).fromNow()}</Typography>
+          <Typography variant="body2">{getDate(post.createdAt)}</Typography>
         </div>
         {(user?.result?.googleId === post?.creator || user?.result?.uid === post?.creator) && (
         <div className={classes.overlay2} name="edit">

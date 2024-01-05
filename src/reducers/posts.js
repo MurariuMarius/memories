@@ -7,14 +7,8 @@ export default (posts = [], action) => {
     case LIKE:
       return posts.map((post) => (post.id === action.payload.id ? action.payload : post));
     case COMMENT:
-        return {
-          posts: posts.map((post) => {
-            if (post._id === +action.payload._id) {
-              return action.payload;
-            }
-            return post;
-          }),
-        };
+      posts.post.comments.push(action.payload);
+      return posts;
     case FETCH_POST:
       return {...posts, post: action.payload};
     case CREATE:

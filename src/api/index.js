@@ -4,21 +4,11 @@ import { app, authService, storageBucket } from '../firebase/config'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
-const API = axios.create({ baseURL: 'https://us-central1-memories-8f4d0.cloudfunctions.net' });
-
-API.interceptors.request.use((req) => {
-  if (localStorage.getItem('profile')) {
-    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`;
-  }
-
-  return req;
-});
-
 const functions = getFunctions()
 
-export const fetchPost = (id) => API.get(`/posts/${id}`);
-export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
-export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
+// export const fetchPost = (id) => API.get(`/posts/${id}`);
+// export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
+// export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
 export const createPost = async (newPost) => {
   const createPost = httpsCallable(functions, 'createPost');
 
@@ -38,11 +28,10 @@ export const createPost = async (newPost) => {
 export const likePost = async (postID) => {
   const likePost = httpsCallable(functions, 'likePost');
   const res = await likePost({ postID });
-  res.data.createdAt.seconds = res.data.createdAt._seconds;
   return res;
 }
-export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
-export const deletePost = (id) => API.delete(`/posts/${id}`);
+export const updatePost = (id, updatedPost) => undefined;
+export const deletePost = (id) => undefined;
 
 export const signIn = async (formData) => {
   console.log(formData.email, formData.password);
@@ -65,4 +54,8 @@ export const signUp = async (formData) => {
   return user;
 }
 
-export const comment = (value,id) => API.post(`/posts/${id}/commentPost`, { value });
+export const comment = async (text, postID) => {
+  const createComment = httpsCallable(functions, 'createComment');
+  const post = await createComment({ text, postID });
+  return post;
+}

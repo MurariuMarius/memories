@@ -14,25 +14,28 @@ export const getPost = (id) => async (dispatch) => {
   try {
     dispatch({ type: START_LOADING });
 
-    const { data } = await api.fetchPost(id);
+    const snapshot = await getDoc(doc(firestoreService, "posts", id));
+    const post = { id, ...snapshot.data() };
 
-    dispatch({ type: FETCH_POST, payload: { post: data } });
+    post.comments = await getComments(post.id);
+
+    dispatch({ type: FETCH_POST, payload: post });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const getPostsBySearch = (searchQuery) => async (dispatch) => {
-  try {
-    dispatch({ type: START_LOADING });
-    const { data: { data } } = await api.fetchPostsBySearch(searchQuery);
+// export const getPostsBySearch = (searchQuery) => async (dispatch) => {
+//   try {
+//     dispatch({ type: START_LOADING });
+//     const { data: { data } } = await api.fetchPostsBySearch(searchQuery);
 
-    dispatch({ type: FETCH_BY_SEARCH, payload: { data } });
-    dispatch({ type: END_LOADING });
-  } catch (error) {
-    console.log(error);
-  }
-};
+//     dispatch({ type: FETCH_BY_SEARCH, payload: { data } });
+//     dispatch({ type: END_LOADING });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 export const getPosts = () => async (dispatch) => {
   try {
@@ -104,7 +107,6 @@ export const commentPost = (value, id) => async (dispatch) => {
 
     dispatch({ type: COMMENT, payload: data });
 
-    return data.comments;
   } catch (error) {
     console.log(error);
   }

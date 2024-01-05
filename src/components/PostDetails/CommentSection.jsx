@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { commentPost } from '../../actions/posts';
 import useStyles from './styles';
+import Comment from './Comment';
 
 const CommentSection = ({ post }) => {
   const user = JSON.parse(localStorage.getItem('profile'));
@@ -14,7 +15,9 @@ const CommentSection = ({ post }) => {
   const commentsRef = useRef();
 
   const handleComment = async () => {
-    const newComments = await dispatch(commentPost(`${user?.result?.name}: ${comment}`, post._id));
+    const newComments = await dispatch(commentPost(comment, post.id));
+
+    console.log(newComments);
 
     setComment('');
     setComments(newComments);
@@ -27,10 +30,9 @@ const CommentSection = ({ post }) => {
       <div className={classes.commentsOuterContainer}>
         <div className={classes.commentsInnerContainer}>
           <Typography gutterBottom variant="h6">Comments</Typography>
-          {comments?.map((c, i) => (
+          {post.comments?.map((c, i) => (
             <Typography key={i} gutterBottom variant="subtitle1">
-              <strong>{c.split(': ')[0]}</strong>
-              {c.split(':')[1]}
+              <Comment comment={c} />
             </Typography>
           ))}
           <div ref={commentsRef} />
