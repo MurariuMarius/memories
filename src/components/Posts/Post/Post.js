@@ -1,35 +1,20 @@
 import React from 'react';
 import { Card, CardActions, CardContent, CardMedia, Button, Typography, ButtonBase } from '@material-ui/core/';
-import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import ThumbUpAltOutlined from '@material-ui/icons/ThumbUpAltOutlined';
-import InfoIcon from '@material-ui/icons/Info';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { getPost, likePost, deletePost } from '../../../actions/posts';
+import { deletePost } from '../../../actions/posts';
 import getDate from '../../../utils/getDate'
 import useStyles from './styles';
+import Likes from './Likes';
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('profile'));
   const history = useHistory();
-
-  const Likes = () => {
-    if (post?.likes?.length > 0) {
-      return post.likes.find((like) => like === user?.result?.uid)
-        ? (
-          <><ThumbUpAltIcon fontSize="small" />&nbsp;{post.likes.length > 1 ? `You and ${post.likes.length - 1} others` : `${post.likes.length} like${post.likes.length > 1 ? 's' : ''}` }</>
-        ) : (
-          <><ThumbUpAltOutlined fontSize="small" />&nbsp;{post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}</>
-        );
-    }
-
-    return <><ThumbUpAltOutlined fontSize="small" />&nbsp;Like</>;
-  };
 
   const openPost = (e) => {
     history.push(`/posts/${post.id}`);
@@ -75,9 +60,7 @@ const Post = ({ post }) => {
         </CardContent>
       </ButtonBase>
       <CardActions className={classes.cardActions}>
-        <Button size="small" color="primary" disabled={!user?.result} onClick={() => dispatch(likePost(post.id))}>
-          <Likes />
-        </Button>
+        <Likes post={post}/>
         {(user?.result?.uid === post?.creator) && (
           <Button size="small" color="secondary" onClick={() => dispatch(deletePost(post.id))}>
             <DeleteIcon fontSize="small" /> &nbsp; Delete
