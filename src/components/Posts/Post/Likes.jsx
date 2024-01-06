@@ -1,33 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbUpAltOutlined from '@material-ui/icons/ThumbUpAltOutlined';
-import { useDispatch } from 'react-redux';
 import { Button } from '@material-ui/core';
 import { likePost } from '../../../actions/posts';
 
 const Likes = ({ post }) => {
     const user = JSON.parse(localStorage.getItem('profile'));
+    const [likes, setLikes] = useState(post.likes);
     
-    const dispatch = useDispatch();
-
-    console.log(post);
-
     let buttonText;
+    
+    const handleLike = async () => {
+      const newLikes = await likePost(post.id);
+      setLikes(newLikes);
+    }
 
-    if (post?.likes?.length > 0) {
-      buttonText = post.likes.find((like) => like === user?.result?.uid)
+    if (likes?.length > 0) {
+      buttonText = likes.find((like) => like === user?.result?.uid)
         ? (
-          <><ThumbUpAltIcon fontSize="small" />&nbsp;{post.likes.length > 1 ? `You and ${post.likes.length - 1} others` : `${post.likes.length} like${post.likes.length > 1 ? 's' : ''}` }</>
+          <><ThumbUpAltIcon fontSize="small" />&nbsp;{likes.length > 1 ? `You and ${likes.length - 1} others` : `${likes.length} like${likes.length > 1 ? 's' : ''}` }</>
         ) : (
-          <><ThumbUpAltOutlined fontSize="small" />&nbsp;{post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}</>
+          <><ThumbUpAltOutlined fontSize="small" />&nbsp;{likes.length} {likes.length === 1 ? 'Like' : 'Likes'}</>
         );
     } else {
         buttonText = <><ThumbUpAltOutlined fontSize="small" />&nbsp;Like</>;
     }
 
     return (
-      <Button size="small" color="primary" disabled={!user?.result} onClick={() => dispatch(likePost(post.id))}>
+      <Button size="small" color="primary" disabled={!user?.result} onClick={async () => await handleLike()}>
         {buttonText}
       </Button>
     );

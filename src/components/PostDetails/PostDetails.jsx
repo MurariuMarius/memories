@@ -8,12 +8,11 @@ import useStyles from './styles';
 import getDate from '../../utils/getDate';
 import CommentSection from './CommentSection';
 import Posts from '../Posts/Posts';
+import Likes from '../Posts/Post/Likes';
 
 const PostDetails = () => {
 
   const [post, setPost] = useState();
-  // const { post, posts, isLoading } = useSelector((state) => state.pos
-  const dispatch = useDispatch();
   const classes = useStyles();
   const { id } = useParams();
 
@@ -38,6 +37,7 @@ const PostDetails = () => {
             <Typography gutterBottom variant="body1" component="p">{post.message}</Typography>
             <Typography variant="h6">Created by: {post.name}</Typography>
             <Typography variant="body1">{getDate(post.createdAt)}</Typography>
+            <Likes post={post} />
             <Divider style={{ margin: '20px 0' }} />
             <CommentSection post={post} />
             <Divider style={{ margin: '20px 0' }} />
