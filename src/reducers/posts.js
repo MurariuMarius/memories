@@ -4,9 +4,6 @@ export default (posts = [], action) => {
   switch (action.type) {
     case FETCH_ALL:
       return action.payload;
-    case COMMENT:
-      posts.post.comments.push(action.payload);
-      return posts;
     case FETCH_POST:
       return {...posts, post: action.payload};
     case CREATE:

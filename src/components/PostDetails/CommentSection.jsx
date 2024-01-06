@@ -15,10 +15,8 @@ const CommentSection = ({ post }) => {
   const commentsRef = useRef();
 
   const handleComment = async () => {
-    const newComments = await dispatch(commentPost(comment, post.id));
-
-    console.log(newComments);
-
+    const newComments = await commentPost(comment, post.id);
+    
     setComment('');
     setComments(newComments);
 
@@ -30,7 +28,7 @@ const CommentSection = ({ post }) => {
       <div className={classes.commentsOuterContainer}>
         <div className={classes.commentsInnerContainer}>
           <Typography gutterBottom variant="h6">Comments</Typography>
-          {post.comments?.map((c, i) => (
+          {comments.map((c, i) => (
             <Typography key={i} gutterBottom variant="subtitle1">
               <Comment comment={c} />
             </Typography>
