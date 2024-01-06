@@ -6,9 +6,6 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const functions = getFunctions()
 
-// export const fetchPost = (id) => API.get(`/posts/${id}`);
-// export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
-// export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
 export const createPost = async (newPost) => {
   const createPost = httpsCallable(functions, 'createPost');
 
@@ -31,7 +28,11 @@ export const likePost = async (postID) => {
   return res;
 }
 export const updatePost = (id, updatedPost) => undefined;
-export const deletePost = (id) => undefined;
+
+export const deletePost = async (post) => {
+  const deletePostCloud = httpsCallable(functions, 'deletePost');
+  await deletePostCloud({ postID: post.id, imageURL: post.image });
+};
 
 export const signIn = async (formData) => {
   console.log(formData.email, formData.password);

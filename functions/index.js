@@ -8,10 +8,15 @@ const { log } = require("firebase-functions/logger");
 const app = initializeApp();
 
 const firestoreService = getFirestore();
+const bucket = getStorage(app).bucket();
 
 exports.createPost = onCall(async (request) => {
 
   const post = { ...request.data, creator:request.auth.uid, likes: [], createdAt: Timestamp.now() };
+
+  const tags = []
+  post.tags.map(tag => tags.push(tag.toLowerCase()));
+  post.tags = tags;
 
   try {
     await firestoreService.collection('posts').add(post);
@@ -63,17 +68,61 @@ exports.updatePost = onCall(async (request) =>{
     return update;
 });
 
-exports.deletePost = onCall(async (request) => {
-
-  const del = {...request.data};
-
-  try{
-    await firestoreService.collection('deletes').add(del);
-  }catch(err){
-    throw new HttpsError('internal', 'Could not add delete');
+async function deleteCollection(db, collectionPath, batchSize) {
+  async function deleteQueryBatch(db, query, resolve) {
+    const snapshot = await query.get();
+  
+    const batchSize = snapshot.size;
+    if (batchSize === 0) {
+      // When there are no documents left, we are done
+      resolve();
+      return;
+    }
+  
+    // Delete documents in a batch
+    const batch = db.batch();
+    snapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+  
+    // Recurse on the next process tick, to avoid
+    // exploding the stack.
+    process.nextTick(() => {
+      deleteQueryBatch(db, query, resolve);
+    });
   }
 
-  return del;
+  const collectionRef = db.collection(collectionPath);
+  const query = collectionRef.orderBy('__name__').limit(batchSize);
+
+  return new Promise((resolve, reject) => {
+    deleteQueryBatch(db, query, resolve).catch(reject);
+  });
+}
+
+const deleteStoredFile = async (url) => {
+
+  const imageID = url.split('%2F')[2].split('?alt')[0];
+
+  const fileRef = bucket.ref(`posts/${request.auth.uid}/${imageID}`);
+  await fileRef.delete();
+}
+
+exports.deletePost = onCall(async (request) => {
+
+  const postID = request.data.postID;
+  const imageURL = request.data.imageURL;
+
+  try {
+    await deleteCollection(firestoreService, `posts/${postID}/comments`, 100);
+    logger.log(postID);
+    await firestoreService.collection('posts').doc(postID).delete();
+    await deleteStoredFile(imageURL);
+  } catch(err) {
+    logger.log(err);
+    throw new HttpsError('internal', 'Could not delete post');
+  }
 });
 
 exports.createUser = onCall(async (request) => {
