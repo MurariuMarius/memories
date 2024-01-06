@@ -42,7 +42,9 @@ const PostDetails = () => {
             <CommentSection post={post} />
             <Divider style={{ margin: '20px 0' }} />
           </div>
-          <Posts fetchPosts={() => getPostsByTag(post.tags, post.id)} />
+          <div className={classes.recommendedPosts}>
+            <Posts fetchPosts={() => getPostsByTag(post.tags, post.id)} />
+          </div>
         </div>
       ) : (
         <CircularProgress />
