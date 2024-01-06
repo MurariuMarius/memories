@@ -8,7 +8,7 @@ const { log } = require("firebase-functions/logger");
 const app = initializeApp();
 
 const firestoreService = getFirestore();
-const bucket = getStorage(app).bucket();
+const bucket = getStorage().bucket();
 
 exports.createPost = onCall(async (request) => {
 
@@ -101,11 +101,10 @@ async function deleteCollection(db, collectionPath, batchSize) {
   });
 }
 
-const deleteStoredFile = async (url) => {
-
+const deleteStoredFile = async (url, userID) => {
   const imageID = url.split('%2F')[2].split('?alt')[0];
-
-  const fileRef = bucket.ref(`posts/${request.auth.uid}/${imageID}`);
+  logger.log(`posts/${userID}/${imageID}`);
+  const fileRef = bucket.file(`posts/${userID}/${imageID}`);
   await fileRef.delete();
 }
 
@@ -118,7 +117,7 @@ exports.deletePost = onCall(async (request) => {
     await deleteCollection(firestoreService, `posts/${postID}/comments`, 100);
     logger.log(postID);
     await firestoreService.collection('posts').doc(postID).delete();
-    await deleteStoredFile(imageURL);
+    await deleteStoredFile(imageURL, request.auth.uid);
   } catch(err) {
     logger.log(err);
     throw new HttpsError('internal', 'Could not delete post');
