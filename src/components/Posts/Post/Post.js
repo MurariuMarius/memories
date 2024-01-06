@@ -12,7 +12,7 @@ import { getPost, likePost, deletePost } from '../../../actions/posts';
 import getDate from '../../../utils/getDate'
 import useStyles from './styles';
 
-const Post = ({ post, setCurrentId }) => {
+const Post = ({ post }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('profile'));
@@ -59,7 +59,6 @@ const Post = ({ post, setCurrentId }) => {
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              setCurrentId(post.id);
             }}
             style={{ color: 'white' }}
             size="small"

@@ -10,24 +10,22 @@ const getComments = async (postId) => {
   return comments;
 }
 
-export const getPost = (id) => async (dispatch) => {
+export const getPost = async (id) => {
   try {
-    dispatch({ type: START_LOADING });
-
     const snapshot = await getDoc(doc(firestoreService, "posts", id));
     const post = { id, ...snapshot.data() };
 
     post.comments = await getComments(post.id);
 
-    dispatch({ type: FETCH_POST, payload: post });
+    return post;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const getPostsByTag = (tags) => async (dispatch) => {
+export const getPostsByTag = (tags, originalID) => async (dispatch) => {
   try {
-    dispatch({ type: START_LOADING });
+    // dispatch({ type: START_LOADING });
     
     console.log(tags);
 
@@ -39,14 +37,16 @@ export const getPostsByTag = (tags) => async (dispatch) => {
       
     const snapshot = await getDocs(filteredPosts);
     snapshot.forEach(doc => {
-      posts.push({ id: doc.id, ...doc.data() });
+      if (doc.id !== originalID) {
+        posts.push({ id: doc.id, ...doc.data() });
+      }
     })
 
     console.log(posts);
 
 
-    dispatch({ type: FETCH_BY_SEARCH, payload: posts });
-    dispatch({ type: END_LOADING });
+    dispatch({ type: 'FETCH_ALL', payload: posts });
+    // dispatch({ type: END_LOADING });
   } catch (error) {
     console.log(error);
   }
