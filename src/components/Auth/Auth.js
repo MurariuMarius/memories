@@ -6,10 +6,12 @@ import { GoogleLogin } from 'react-google-login';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import Icon from './icon';
-import { signin, signup } from '../../actions/auth';
+import { authenticate } from '../../actions/auth'
+import { signUp, signIn } from '../../api';
 import { AUTH } from '../../constants/actionTypes';
 import useStyles from './styles';
 import Input from './Input';
+
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
@@ -32,11 +34,7 @@ const SignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (isSignup) {
-      dispatch(signup(form, history));
-    } else {
-      dispatch(signin(form, history));
-    }
+    dispatch(authenticate(form, history, isSignup ? signUp : signIn));
   };
 
   const googleSuccess = async (res) => {
