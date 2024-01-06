@@ -32,9 +32,8 @@ const Post = ({ post }) => {
   };
 
   const openPost = (e) => {
-    // dispatch(getPost(post._id, history));
-
     history.push(`/posts/${post.id}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
