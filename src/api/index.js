@@ -20,7 +20,8 @@ export const createPost = async (newPost) => {
   }
 
   await addImageURL(newPost);
-  await createPost(newPost);
+  const post = await createPost(newPost);
+  return post;
 };
 export const likePost = async (postID) => {
   const likePost = httpsCallable(functions, 'likePost');
