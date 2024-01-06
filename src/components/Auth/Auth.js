@@ -6,11 +6,12 @@ import { GoogleLogin } from 'react-google-login';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import Icon from './icon';
-import { authenticate } from '../../actions/auth';
+import { authenticate } from '../../actions/auth'
+import { signUp, signIn } from '../../api';
 import { AUTH } from '../../constants/actionTypes';
 import useStyles from './styles';
 import Input from './Input';
-import { signIn, signUp } from '../../api';
+
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 

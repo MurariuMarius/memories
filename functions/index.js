@@ -1,37 +1,22 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { initializeApp } = require('firebase-admin/app');
 const { getFirestore, Timestamp } = require('firebase-admin/firestore');
-const logger = require("firebase-functions/logger");
 const { getStorage, getDownloadURL } = require("firebase-admin/storage");
+const { logger } = require("firebase-functions/v2");
+const { log } = require("firebase-functions/logger");
 
 const app = initializeApp();
 
 const firestoreService = getFirestore();
-const storageBucket = getStorage().bucket();
 
 exports.createPost = onCall(async (request) => {
 
-  const getFileFromBase64 = (base64) => {
-    return Uint8Array.from(Buffer.from(base64, 'base64'));
-  }
-
-  const addImageURL = async (post) => {
-    if (!post.selectedFile) {
-      throw new HttpsError('invalid-argument', "No image added");
-    }
-    const file = getFileFromBase64(post.selectedFile);
-    const fileRef = storageBucket.file(`posts/${request.auth.uid}/${Math.random()}`);
-    await fileRef.save(file);
-
-    post.selectedFile = await getDownloadURL(fileRef);
-  }
-
-  const post = { ...request.data, creator:request.auth.uid, likes: 0, createdAt: Timestamp.now() };
+  const post = { ...request.data, creator:request.auth.uid, likes: [], createdAt: Timestamp.now() };
 
   try {
-    await addImageURL(post);
     await firestoreService.collection('posts').add(post);
   } catch (err) {
+    logger.log(err);
     throw new HttpsError('internal', 'Could not create post');
   }
   return post;
@@ -39,15 +24,30 @@ exports.createPost = onCall(async (request) => {
 
 exports.likePost = onCall(async (request) => {
 
-    const like = {...request.data};
+    const postID = request.data.postID;
 
     try{
-      await firestoreService.collection('likes').add(like);
+      const post = await firestoreService.collection('posts').doc(postID).get();
+
+      const likes = post.data().likes;
+
+      const index = likes.indexOf(request.auth.uid);
+      if (index == -1) {
+        likes.push(request.auth.uid);
+      } else {
+        likes.splice(index, 1);
+        logger.log('HERE');
+        logger
+      }
+
+      await firestoreService.collection('posts').doc(postID).update({ likes });
+      
+      const updatedPost = await firestoreService.collection('posts').doc(postID).get();
+      return { id: postID, ...updatedPost.data() };
+
     }catch(err){
       throw new HttpsError('internal', 'Could not add likes');
     }
-
-    return like;
 });
 
 exports.updatePost = onCall(async (request) =>{
@@ -83,7 +83,40 @@ exports.createUser = onCall(async (request) => {
     email: request.data.email,
   };
 
-  await firestoreService.collection('users').add(user);
+  await firestoreService.collection('users').doc(request.auth.uid).create(user);
 
   return { ...user, name: user.firstName + " " + user.lastName };
 })
+
+exports.createComment = onCall(async request => {
+
+  const getComments = async (postId) => {
+    const comments = [];
+    const snapshot = await firestoreService.collection(`posts/${postId}/comments`).get();
+    snapshot.forEach(c => comments.push({id: c.id, ...c.data()}));
+    return comments;
+  }
+
+  const postID = request.data.postID;
+  let comment = {
+    text: request.data.text,
+    userID: request.auth.uid,
+    createdAt: Timestamp.now()
+  }
+
+  try {
+    const userSnapshot = await firestoreService.collection('users').doc(comment.userID).get();
+    const user =  { ...userSnapshot.data() };
+    comment = { ...comment, firstName: user.firstName, lastName: user.lastName };
+    const snapshot = await firestoreService.collection(`posts/${postID}/comments`).add(comment);
+
+    const post = await snapshot.get();
+
+    const comments = await getComments(postID);
+    return { id: post.id, ...post.data(), comments };
+  } catch(err) {
+    logger.log(err)
+    logger.log(err.message)
+    throw new HttpsError('internal', 'Could not create comment');
+  }
+});
