@@ -1,9 +1,8 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { initializeApp } = require('firebase-admin/app');
 const { getFirestore, Timestamp } = require('firebase-admin/firestore');
-const { getStorage, getDownloadURL } = require("firebase-admin/storage");
+const { getStorage } = require("firebase-admin/storage");
 const { logger } = require("firebase-functions/v2");
-const { log } = require("firebase-functions/logger");
 
 const app = initializeApp();
 
@@ -19,12 +18,12 @@ exports.createPost = onCall(async (request) => {
   post.tags = tags;
 
   try {
-    await firestoreService.collection('posts').add(post);
+    const postRef = await firestoreService.collection('posts').add(post);
+    return { ...post, id: postRef.id };
   } catch (err) {
     logger.log(err);
     throw new HttpsError('internal', 'Could not create post');
   }
-  return post;
 });
 
 exports.likePost = onCall(async (request) => {
@@ -102,10 +101,17 @@ async function deleteCollection(db, collectionPath, batchSize) {
 }
 
 const deleteStoredFile = async (url, userID) => {
-  const imageID = url.split('%2F')[2].split('?alt')[0];
-  logger.log(`posts/${userID}/${imageID}`);
-  const fileRef = bucket.file(`posts/${userID}/${imageID}`);
-  await fileRef.delete();
+  try {
+    const imageID = url.split('%2F')[2].split('?alt')[0];
+    const fileRef = bucket.file(`posts/${userID}/${imageID}`);
+    await fileRef.delete();
+  } catch (err) {
+    if (err instanceof TypeError || err instanceof ReferenceError) {
+      logger.log(err);
+    } else {
+      throw e;
+    }
+  }
 }
 
 exports.deletePost = onCall(async (request) => {

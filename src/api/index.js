@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { app, authService, storageBucket } from '../firebase/config'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
@@ -19,7 +18,9 @@ export const createPost = async (newPost) => {
     console.log(post.image);
   }
 
-  await addImageURL(newPost);
+  if (!newPost.image.length) {
+    await addImageURL(newPost);
+  }
   const post = await createPost(newPost);
   return post;
 };
