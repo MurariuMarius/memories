@@ -9,6 +9,7 @@ import { deletePost } from '../../../actions/posts';
 import getDate from '../../../utils/getDate'
 import useStyles from './styles';
 import Likes from './Likes';
+import { UPDATE_POST_FORM } from '../../../constants/actionTypes';
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const Post = ({ post }) => {
       >
         <CardMedia
           className={classes.media}
-          image={post.image}// || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
+          image={post.image || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
           title={post.title}
         />
         <div className={classes.overlay}>
@@ -43,6 +44,9 @@ const Post = ({ post }) => {
           <Button
             onClick={(e) => {
               e.stopPropagation();
+              dispatch((() => async (dispatch) => dispatch({type: UPDATE_POST_FORM, payload: post}))())
+              history.push('/posts');
+              console.log('clicked');
             }}
             style={{ color: 'white' }}
             size="small"

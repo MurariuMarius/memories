@@ -7,6 +7,6 @@ export const FETCH_POST = 'FETCH_POST';
 export const COMMENT = 'COMMENT';
 export const END_LOADING = 'END_LOADING';
 export const START_LOADING = 'START_LOADING';
-
+export const UPDATE_POST_FORM = 'UPDATE_POST_FORM'
 export const AUTH = 'AUTH';
 export const LOGOUT = 'LOGOUT';
