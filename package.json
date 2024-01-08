@@ -1,6 +1,6 @@
 {
-  "name": "mern-stack-client",
-  "version": "0.1.0",
+  "name": "memories",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.4",
@@ -9,12 +9,10 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "axios": "^0.19.2",
     "firebase": "^10.7.0",
     "firebase-admin": "^11.11.1",
     "firebase-functions": "^4.5.0",
-    "firebase-tools": "^12.9.1",
-    "jwt-decode": "^3.1.2",
+    "firebase-tools": "^13.0.2",
     "material-ui-chip-input": "^1.1.0",
     "moment": "^2.29.4",
     "react": "^16.12.0",
@@ -23,18 +21,15 @@
     "react-google-login": "^5.1.25",
     "react-redux": "^7.2.9",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^5.0.1",
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2"
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts build",
+    "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -49,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@redux-devtools/core": "^3.9.0",
     "@redux-devtools/dock-monitor": "^1.4.0",
     "@redux-devtools/log-monitor": "^2.3.0",
