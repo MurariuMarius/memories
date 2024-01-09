@@ -2,8 +2,12 @@ import { getFunctions, httpsCallable } from 'firebase/functions'
 import { app, authService, storageBucket } from '../firebase/config'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import axios from 'axios';
+const API = axios.create({ baseURL: 'http://localhost:5000' });
 
 const functions = getFunctions()
+
+export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
 
 export const createPost = async (newPost) => {
   const createPost = httpsCallable(functions, 'createPost');
