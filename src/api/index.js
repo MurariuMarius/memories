@@ -3,10 +3,10 @@ import { app, authService, storageBucket } from '../firebase/config'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
-const functions = getFunctions(app);
+const functions = getFunctions();
 
 export const fetchPostsByCreator = (name) => API.get(`/posts/creator?name=${name}`);
-
+export const fetchPost = (id) => API.get(`/posts/${id}`);
 export const createPost = async (newPost) => {
   const createPost = httpsCallable(functions, 'createPost');
 

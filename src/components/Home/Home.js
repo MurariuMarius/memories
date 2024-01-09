@@ -6,6 +6,8 @@ import Form from '../Form/Form';
 
 import useStyles from './styles';
 
+import useStyles from './styles';
+
 const Home = () => {
   
   const classes = useStyles();
@@ -48,5 +50,3 @@ const Home = () => {
     </Grow>
   );
 };
-
-export default Home;
