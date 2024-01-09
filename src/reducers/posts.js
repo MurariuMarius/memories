@@ -1,21 +1,29 @@
-import { FETCH_ALL, CREATE, UPDATE, DELETE, COMMENT, FETCH_POST } from '../constants/actionTypes';
+import { FETCH_ALL, CREATE, UPDATE, DELETE, COMMENT, FETCH_POST, UPDATE_POST_FORM } from '../constants/actionTypes';
 
-export default (posts = [], action) => {
+const postsReducer = (posts = [], action) => {
   switch (action.type) {
     case FETCH_ALL:
       return action.payload;
-    case COMMENT:
-      posts.post.comments.push(action.payload);
-      return posts;
     case FETCH_POST:
       return {...posts, post: action.payload};
     case CREATE:
       return [...posts, action.payload];
     case UPDATE:
-      return posts.map((post) => (post._id === action.payload._id ? action.payload : post));
+      return posts.map((post) => (post.id === action.payload.id ? action.payload : post));
     case DELETE:
-      return posts.filter((post) => post._id !== action.payload);
+      return posts.filter(post => post.id !== action.payload.id);
     default:
       return posts;
   }
 };
+
+const postToUpdate = (postToUpdate = null, action) => {
+  switch (action.type) {
+    case UPDATE_POST_FORM:
+      return action.payload;
+    default:
+      return postToUpdate;
+  }
+}
+
+export { postsReducer, postToUpdate };

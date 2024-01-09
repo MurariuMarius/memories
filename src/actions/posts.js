@@ -83,9 +83,9 @@ export const createPost = (post) => async (dispatch) => {
   }
 };
 
-export const updatePost = (id, post) => async (dispatch) => {
+export const updatePost = (post) => async (dispatch) => {
   try {
-    const { data } = await api.updatePost(id, post);
+    const { data } = await api.updatePost(post);
 
     dispatch({ type: UPDATE, payload: data });
   } catch (error) {
@@ -104,22 +104,20 @@ export const likePost = async (id) => {
   }
 };
 
-export const deletePost = (id) => async (dispatch) => {
+export const deletePost = (post) => async (dispatch) => {
   try {
-    await await api.deletePost(id);
+    await api.deletePost(post);
 
-    dispatch({ type: DELETE, payload: id });
+    dispatch({ type: DELETE, payload: post });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const commentPost = (value, id) => async (dispatch) => {
+export const commentPost = async (value, id) => {
   try {
     const { data } = await api.comment(value, id);
-
-    dispatch({ type: COMMENT, payload: data });
-
+    return data.comments;
   } catch (error) {
     console.log(error);
   }
