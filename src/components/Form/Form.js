@@ -48,7 +48,7 @@ const Form = () => {
       dispatch(createPost({ ...postData, name: user?.result?.name }));
       clear();
     } else {
-      dispatch(updatePost({ ...postData, name: user?.result?.name }));
+      dispatch(updatePost({ ...originalPost, ...postData }));
       clear();
     }
   };

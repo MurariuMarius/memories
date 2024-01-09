@@ -29,7 +29,11 @@ export const likePost = async (postID) => {
   const res = await likePost({ postID });
   return res;
 }
-export const updatePost = (id, updatedPost) => undefined;
+export const updatePost = async (post) => {
+  const updatePost = httpsCallable(functions, 'updatePost');
+  const res = await updatePost({ post });
+  return res;
+};
 
 export const deletePost = async (post) => {
   const deletePostCloud = httpsCallable(functions, 'deletePost');

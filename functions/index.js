@@ -40,8 +40,6 @@ exports.likePost = onCall(async (request) => {
         likes.push(request.auth.uid);
       } else {
         likes.splice(index, 1);
-        logger.log('HERE');
-        logger
       }
 
       await firestoreService.collection('posts').doc(postID).update({ likes });
@@ -56,15 +54,18 @@ exports.likePost = onCall(async (request) => {
 
 exports.updatePost = onCall(async (request) =>{
 
-    const update = {...request.data};
+    logger.log(request.data);
 
     try{
-      await firestoreService.collection('updates').add(update);
+    const {comments, id, ...post} = request.data.post;
+
+      await firestoreService.collection('posts').doc(id).update({ ...post });
+      return request.data.post;
     }catch(err){
+      logger.log(err);
       throw new HttpsError('internal','Could not add updates');
     }
 
-    return update;
 });
 
 async function deleteCollection(db, collectionPath, batchSize) {
