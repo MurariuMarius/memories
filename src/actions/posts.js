@@ -23,6 +23,41 @@ export const getPost = async (id) => {
   }
 };
 
+const getPostsByTitle = (title) => async (dispatch) => {
+  try {
+    const posts = [];
+    const postRef = collection(firestoreService, "posts");
+
+    console.log('here');
+
+    const filteredPosts = query(postRef,
+      where("title", "==", title));
+
+
+      const snapshot = await getDocs(filteredPosts);
+      snapshot.forEach(doc => {
+          posts.push({ id: doc.id, ...doc.data() });
+      })
+      dispatch({ type: 'FETCH_ALL', payload: posts });
+
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getFilteredPosts = (query) => (dispatch) => {
+  try {
+    console.log(query);
+    if (query.startsWith("#")) {
+      dispatch(getPostsByTag(query.replaceAll("#", "").replaceAll(" ", "").split(",")));
+    } else {
+      dispatch(getPostsByTitle(query))
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const getPostsByTag = (tags, originalID) => async (dispatch) => {
   try {
     // dispatch({ type: START_LOADING });
