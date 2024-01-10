@@ -27,7 +27,7 @@ const PostDetails = () => {
 
   const goToProfilePage = (e) => {
     e.stopPropagation();
-    history.push(`creator/${post?.creator}`);
+    history.push(`creators/${post?.creator}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
