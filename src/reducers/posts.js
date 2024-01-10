@@ -1,4 +1,4 @@
-import { FETCH_ALL,FETCH_BY_CREATOR, CREATE, UPDATE, DELETE, FETCH_POST, UPDATE_POST_FORM } from '../constants/actionTypes';
+import { FETCH_ALL, CREATE, UPDATE, DELETE, FETCH_POST, UPDATE_POST_FORM } from '../constants/actionTypes';
 
 const postsReducer = (posts = [], action) => {
   switch (action.type) {

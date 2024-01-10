@@ -1,4 +1,4 @@
-import {  START_LOADING, END_LOADING, FETCH_ALL, FETCH_POST, FETCH_BY_SEARCH, CREATE, UPDATE, DELETE, LIKE, COMMENT } from '../constants/actionTypes';
+import { FETCH_ALL, CREATE, UPDATE, DELETE } from '../constants/actionTypes';
 import * as api from '../api/index.js';
 import { firestoreService } from '../firebase/config.js';
 import { collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
@@ -23,16 +23,13 @@ export const getPost = async (id) => {
   }
 };
 
-const getPostsByTitle = (title) => async (dispatch) => {
+export const queryPosts = (getField) => async (dispatch) => {
   try {
     const posts = [];
     const postRef = collection(firestoreService, "posts");
 
-    console.log('here');
-
     const filteredPosts = query(postRef,
-      where("title", "==", title));
-
+      getField());
 
       const snapshot = await getDocs(filteredPosts);
       snapshot.forEach(doc => {
@@ -47,11 +44,10 @@ const getPostsByTitle = (title) => async (dispatch) => {
 
 export const getFilteredPosts = (query) => (dispatch) => {
   try {
-    console.log(query);
     if (query.startsWith("#")) {
       dispatch(getPostsByTag(query.replaceAll("#", "").replaceAll(" ", "").split(",")));
     } else {
-      dispatch(getPostsByTitle(query))
+      dispatch(queryPosts(() => where("title", "==", query)));
     }
   } catch (error) {
     console.log(error);
