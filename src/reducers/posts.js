@@ -1,10 +1,8 @@
-import { FETCH_ALL, CREATE, UPDATE, DELETE, COMMENT, FETCH_POST, UPDATE_POST_FORM, FETCH_BY_SEARCH } from '../constants/actionTypes';
+import { FETCH_ALL,FETCH_BY_CREATOR, CREATE, UPDATE, DELETE, FETCH_POST, UPDATE_POST_FORM } from '../constants/actionTypes';
 
 const postsReducer = (posts = [], action) => {
   switch (action.type) {
     case FETCH_ALL:
-      return action.payload;
-    case FETCH_BY_SEARCH:
       return action.payload;
     case FETCH_POST:
       return {...posts, post: action.payload};

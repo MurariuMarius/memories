@@ -44,6 +44,8 @@ const Form = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    postData.tags = postData.tags.replace(" ", "").split(",")
+
     if (!originalPost) {
       dispatch(createPost({ ...postData, name: user?.result?.name }));
       clear();
@@ -69,7 +71,7 @@ const Form = () => {
         <Typography variant="h6">{originalPost ? `Editing ${originalPost?.title}` : 'Share a memory'}</Typography>
         <TextField name="title" variant="outlined" label="Title" fullWidth value={postData.title} onChange={(e) => setPostData({ ...postData, title: e.target.value })} />
         <TextField name="message" variant="outlined" label="Message" fullWidth multiline rows={4} value={postData.message} onChange={(e) => setPostData({ ...postData, message: e.target.value })} />
-        <TextField name="tags" variant="outlined" label="Tags (comma separated)" fullWidth value={postData.tags} onChange={(e) => setPostData({ ...postData, tags: e.target.value.split(',') })} />
+        <TextField name="tags" variant="outlined" label="Tags (comma separated)" fullWidth value={postData.tags} onChange={(e) => setPostData({ ...postData, tags: e.target.value })} />
         <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
           Upload file
           <VisuallyHiddenInput type="file" onChange={e => setPostData({ ...postData, image: e.target.files[0] })}/>

@@ -35,6 +35,17 @@ export const getPost = async (id) => {
   }
 };
 
+export const getFilteredPosts = (query) => (dispatch) => {
+  try {
+    console.log(query);
+    if (query.startsWith("#")) {
+      dispatch(getPostsByTag(query.replaceAll("#", "").replaceAll(" ", "").split(",")));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const getPostsByTag = (tags, originalID) => async (dispatch) => {
   try {
     // dispatch({ type: START_LOADING });
