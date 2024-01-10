@@ -44,6 +44,11 @@ const Home = () => {
                  <Button onClick={searchPost} className={classes.searchButton} color="primary" variant="contained">Search</Button>
             </AppBar>
             <Form />
+            {(!searchQuery && !tags.length) && (
+              <Paper className={classes.pagination} elevation={6}>
+                <Pagination page={page} />
+              </Paper>
+            )}
           </Grid>
         </Grid>
       </Container>
