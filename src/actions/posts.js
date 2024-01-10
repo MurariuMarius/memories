@@ -23,16 +23,13 @@ export const getPost = async (id) => {
   }
 };
 
-const getPostsByTitle = (title) => async (dispatch) => {
+export const queryPosts = (getField) => async (dispatch) => {
   try {
     const posts = [];
     const postRef = collection(firestoreService, "posts");
 
-    console.log('here');
-
     const filteredPosts = query(postRef,
-      where("title", "==", title));
-
+      getField());
 
       const snapshot = await getDocs(filteredPosts);
       snapshot.forEach(doc => {
@@ -47,11 +44,10 @@ const getPostsByTitle = (title) => async (dispatch) => {
 
 export const getFilteredPosts = (query) => (dispatch) => {
   try {
-    console.log(query);
     if (query.startsWith("#")) {
       dispatch(getPostsByTag(query.replaceAll("#", "").replaceAll(" ", "").split(",")));
     } else {
-      dispatch(getPostsByTitle(query))
+      dispatch(queryPosts(() => where("title", "==", query)));
     }
   } catch (error) {
     console.log(error);
@@ -153,18 +149,6 @@ export const commentPost = async (value, id) => {
   try {
     const { data } = await api.comment(value, id);
     return data.comments;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const getPostsByCreator = (name) => async (dispatch) => {
-  try {
-    // dispatch({ type: START_LOADING });
-    // const { data: { data } } = await api.fetchPostsByCreator(name);
-
-    // dispatch({ type: FETCH_BY_CREATOR, payload: { data } });
-    // dispatch({ type: END_LOADING });
   } catch (error) {
     console.log(error);
   }
