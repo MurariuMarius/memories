@@ -10,6 +10,7 @@ import getDate from '../../../utils/getDate'
 import useStyles from './styles';
 import Likes from './Likes';
 import { UPDATE_POST_FORM } from '../../../constants/actionTypes';
+import { Link } from '@material-ui/icons';
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
@@ -21,6 +22,12 @@ const Post = ({ post }) => {
     history.push(`/posts/${post.id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  
+  const goToProfilePage = (e) => {
+    e.stopPropagation();
+    history.push(`creator/${post?.creator}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   return (
     <Card className={classes.card} raised elevation={6}>
@@ -36,7 +43,9 @@ const Post = ({ post }) => {
           title={post.title}
         />
         <div className={classes.overlay}>
-          <Typography variant="h6">{post.name}</Typography>
+          <Button onClick={goToProfilePage}>
+            <Typography variant="h6" className={classes.profileLink}>{post.name} </Typography>
+          </Button>
           <Typography variant="body2">{getDate(post.createdAt)}</Typography>
         </div>
         {(user?.result?.googleId === post?.creator || user?.result?.uid === post?.creator) && (

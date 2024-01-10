@@ -53,4 +53,7 @@ export default makeStyles({
     display: 'block',
     textAlign: 'center',
   },
+  profileLink: {
+    color: 'white',
+  }
 });

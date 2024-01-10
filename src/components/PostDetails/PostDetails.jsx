@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Paper, Typography, CircularProgress, Divider } from '@material-ui/core/';
+import { Paper, Typography, CircularProgress, Divider, Button } from '@material-ui/core/';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 
@@ -15,6 +15,7 @@ const PostDetails = () => {
   const [post, setPost] = useState();
   const classes = useStyles();
   const { id } = useParams();
+  const history = useHistory();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +24,12 @@ const PostDetails = () => {
     }
     fetchData();
   }, [id]);
+
+  const goToProfilePage = (e) => {
+    e.stopPropagation();
+    history.push(`creator/${post?.creator}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   return (
     <Paper style={{ padding: '20px', borderRadius: '15px' }} elevation={6}>
@@ -35,7 +42,13 @@ const PostDetails = () => {
               <img className={classes.media} src={post.image || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} alt={post.title} />
             </div>
             <Typography gutterBottom variant="body1" component="p">{post.message}</Typography>
-            <Typography variant="h6">Created by: {post.name}</Typography>
+            <div className={classes.profile}>
+
+            </div>
+             <Typography variant="h6">Created by:
+              <Button onClick={goToProfilePage}>
+            <Typography variant="h6" className={classes.profileLink}>{post.name} </Typography>
+          </Button></Typography>
             <Typography variant="body1">{getDate(post.createdAt)}</Typography>
             <Likes post={post} />
             <Divider style={{ margin: '20px 0' }} />
