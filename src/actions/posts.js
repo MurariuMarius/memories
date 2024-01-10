@@ -161,9 +161,9 @@ export const commentPost = async (value, id) => {
 export const getPostsByCreator = (name) => async (dispatch) => {
   try {
     // dispatch({ type: START_LOADING });
-    const { data: { data } } = await api.fetchPostsByCreator(name);
+    // const { data: { data } } = await api.fetchPostsByCreator(name);
 
-    dispatch({ type: FETCH_BY_CREATOR, payload: { data } });
+    // dispatch({ type: FETCH_BY_CREATOR, payload: { data } });
     // dispatch({ type: END_LOADING });
   } catch (error) {
     console.log(error);

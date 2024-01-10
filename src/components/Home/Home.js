@@ -6,8 +6,6 @@ import Form from '../Form/Form';
 
 import useStyles from './styles';
 
-import useStyles from './styles';
-
 const Home = () => {
   
   const classes = useStyles();
@@ -44,14 +42,11 @@ const Home = () => {
                  <Button onClick={searchPost} className={classes.searchButton} color="primary" variant="contained">Search</Button>
             </AppBar>
             <Form />
-            {(!searchQuery && !tags.length) && (
-              <Paper className={classes.pagination} elevation={6}>
-                <Pagination page={page} />
-              </Paper>
-            )}
           </Grid>
         </Grid>
       </Container>
     </Grow>
   );
 };
+
+export default Home;
