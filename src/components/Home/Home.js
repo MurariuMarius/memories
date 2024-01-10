@@ -35,7 +35,7 @@ const Home = () => {
           <Grid item xs={12} sm={6} md={9}>
             {
               query.length ?
-              <Posts fetchPosts={() => getFilteredPosts(query)} /> :
+              <Posts fetchPosts={() => getFilteredPosts(query.trim())} /> :
               <Posts fetchPosts={() => getPosts()} />
             }
           </Grid>

@@ -3,18 +3,6 @@ import * as api from '../api/index.js';
 import { firestoreService } from '../firebase/config.js';
 import { collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 
-export const getPostsBySearch = (searchQuery) => async (dispatch) => {
-  try {
-    dispatch({ type: START_LOADING });
-    const { data: { data } } = await api.fetchPostsBySearch(searchQuery);
-
-    dispatch({ type: FETCH_BY_SEARCH, payload: { data } });
-    dispatch({ type: END_LOADING });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 const getComments = async (postId) => {
   const comments = [];
   const snapshot = await getDocs(collection(firestoreService, `posts/${postId}/comments`));
@@ -35,11 +23,35 @@ export const getPost = async (id) => {
   }
 };
 
+const getPostsByTitle = (title) => async (dispatch) => {
+  try {
+    const posts = [];
+    const postRef = collection(firestoreService, "posts");
+
+    console.log('here');
+
+    const filteredPosts = query(postRef,
+      where("title", "==", title));
+
+
+      const snapshot = await getDocs(filteredPosts);
+      snapshot.forEach(doc => {
+          posts.push({ id: doc.id, ...doc.data() });
+      })
+      dispatch({ type: 'FETCH_ALL', payload: posts });
+
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const getFilteredPosts = (query) => (dispatch) => {
   try {
     console.log(query);
     if (query.startsWith("#")) {
       dispatch(getPostsByTag(query.replaceAll("#", "").replaceAll(" ", "").split(",")));
+    } else {
+      dispatch(getPostsByTitle(query))
     }
   } catch (error) {
     console.log(error);
