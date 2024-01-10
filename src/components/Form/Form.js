@@ -6,6 +6,7 @@ import { createPost, updatePost } from '../../actions/posts';
 import useStyles from './styles';
 
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
+import { UPDATE_POST_FORM } from '../../constants/actionTypes';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -38,14 +39,19 @@ const Form = () => {
 
   const clear = () => {
     setPostData({ title: '', message: '', tags: '', image: '' });
+    dispatch({type: UPDATE_POST_FORM, payload: null});
   };
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    postData.tags = postData.tags.replace(" ", "").split(",")
-
+    try {
+      postData.tags = postData.tags.replace(" ", "").split(",")
+    } catch (err) {
+      console.log(err);
+    }
+    
     if (!originalPost) {
       dispatch(createPost({ ...postData, name: user?.result?.name }));
       clear();
